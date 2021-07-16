@@ -1,3 +1,5 @@
+# Written by anibali (https://github.com/anibali/docker-pytorch)
+
 FROM nvidia/cuda:11.1.1-base-ubuntu20.04
 
 # Install some basic utilities
@@ -24,7 +26,7 @@ USER user
 ENV HOME=/home/user
 RUN chmod 777 /home/user
 
-# Install Miniconda and Python 3.8
+# Install Miniconda and Python 3.9
 ENV CONDA_AUTO_UPDATE_CONDA=false
 ENV PATH=/home/user/miniconda/bin:$PATH
 RUN curl -sLo ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh \
