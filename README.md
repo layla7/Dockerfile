@@ -18,3 +18,17 @@ This build is based on the base image built by `Dockerfile_base`. You can modify
 ```
 docker build -t [name:tag] .
 ```
+If you want to use gpus before using Docker, you have to install `nvidia-container-toolkit`.
+```
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+```
+```
+sudo apt-get update && sudo apt-get install -y nvidia-docker2
+```
+To run a container, run
+```
+docker run -it -gpus all --ipc=host --name [container_name] -v [directory]:/workspace [name:tag]
+```
+Here, `directory` means the directory you want to mount on the container in order to access to the local filesystem. 
