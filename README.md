@@ -18,6 +18,7 @@ This build is based on the base image built by `Dockerfile_base`. You can modify
 ```
 docker build -t [name:tag] .
 ```
+## Run a Docker container
 If you want to use gpus before using Docker, you have to install `nvidia-container-toolkit`.
 ```
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
