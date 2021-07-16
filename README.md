@@ -1,6 +1,6 @@
 # Personal Dockerfiles
 
-## Dockerfile_base: 
+## Dockerfile_base
 * ubuntu==20.04
 * cuda==11.1.1
 * python==3.9.5
