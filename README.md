@@ -1,5 +1,24 @@
 # Personal Dockerfiles
 
+## Dockerfile.NGC.DGX
+* ubuntu==20.04
+* cuda==11.3.1
+* cuDNN==8.2.1
+* python==3.8.10
+* pytorch==1.9.0
+* torchvision==0.10.0
+* opencv-python==4.5.3
+* etc
+
+In addition, some additional packages are installed for transferring files between NVIDIA DGX and external source or NAS.
+* rsync==3.1.3
+* lftp==4.8.4
+
+To build this image, run
+```
+docker build -f Dockerfile.NGC.DGX -t [name:tag] .
+```
+
 ## Dockerfile_base
 * ubuntu==20.04
 * cuda==11.1.1
@@ -30,6 +49,6 @@ sudo apt-get update && sudo apt-get install -y nvidia-docker2
 ```
 To run a container, run
 ```
-docker run -it -gpus all --ipc=host --name [container_name] -v [directory]:/workspace [name:tag]
+docker run -it -gpus all --shm-size=1gb --name [container_name] -v [directory]:/workspace [name:tag]
 ```
 Here, `directory` means the directory you want to mount on the container in order to access to the local filesystem. 
