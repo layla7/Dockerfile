@@ -1,0 +1,11 @@
+FROM nvcr.io/nvidia/pytorch:21.06-py3
+
+RUN apt-get update && apt-get install -y \
+	rsync \
+	lftp
+RUN mkdir ~/.lftp
+RUN echo "set ssl:verify-certificate no" >> ~/.lftp/rc
+
+COPY install.sh /workspace
+
+RUN bash install.sh && rm install.sh
