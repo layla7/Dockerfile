@@ -72,7 +72,11 @@ Here, `DIR` means the directory you want to mount on the container in order to a
    Note that you can use the Linux command (e.g., `cd`, `rm`, `ls`) when connected.
    Then, run the below command to transfer the files.
    ```
-   mirror -R SOURCE TARGET
+   # remote --> local
+   mirror REMOTE_DIR LOCAL_DIR
+
+   # local --> remote
+   mirror -R LOCAL_DIR REMOTE_DIR
    ```
    `SOURCE` and `TARGET` can be both local and remote file directory. `-R` stands for recursive mode, which enables to transfer the whole directory tree.
 
