@@ -14,10 +14,11 @@ In addition, some additional packages are installed for transferring files betwe
 * rsync==3.1.3
 * lftp==4.8.4
 
-To build this image, run
+Because we usually mount the local partition to the container and write some files on it, There is a need to set `USER` as a non-root user. To build this image, run
 ```
-docker build -f Dockerfile.NGC.DGX [-t name:tag] PATH
+docker build -f Dockerfile.NGC.DGX [--build-arg USER=$(id -un)] [-t name:tag] PATH
 ```
+The default setting for `USER`, `UID`, and `GID` is `docker`, `1000`, `1000`, respectively. If your account has different ones, you have to specify them by `--build-arg`.
 
 ## Dockerfile_base
 * ubuntu==20.04
