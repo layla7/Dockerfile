@@ -1,10 +1,18 @@
 FROM nvcr.io/nvidia/pytorch:21.06-py3
 
+ARG USER=docker
+
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
+	sudo \
 	rsync \
 	lftp \
 	libgl1-mesa-glx \
 	libglib2.0
+
+RUN useradd -m ${USER}
+USER ${USER}
+
 RUN mkdir ~/.lftp
 RUN echo "set ssl:verify-certificate no" >> ~/.lftp/rc
 
