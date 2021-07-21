@@ -1,6 +1,7 @@
 FROM nvcr.io/nvidia/pytorch:21.06-py3
 
-ARG USER=docker
+ARG USERNAME=root
+ARG PASSWORD
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
@@ -10,8 +11,10 @@ RUN apt-get update && apt-get install -y \
 	libgl1-mesa-glx \
 	libglib2.0
 
-RUN useradd -m ${USER}
-USER ${USER}
+RUN if [ $USERNAME != 'root' ]; then \
+		useradd -m ${USERNAME} -p $(openssl passwd -1 ${PASSWORD}); \
+	fi
+USER ${USERNAME}
 
 RUN mkdir ~/.lftp
 RUN echo "set ssl:verify-certificate no" >> ~/.lftp/rc
