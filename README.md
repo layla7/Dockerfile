@@ -14,11 +14,14 @@ In addition, some additional packages are installed for transferring files betwe
 * rsync==3.1.3
 * lftp==4.8.4
 
-Because we usually mount the local partition to the container and write some files on it, There is a need to set `USER` as a non-root user. To build this image, run
+If you need to install additional packages, just modify `install.sh` which automatically install all the packages you specify.
+
+When we mount a local volume to the container, the ownership of created files or directories belongs to the root user if we don't specify `USER` in Dockerfile. This is a problem because this ownership still belongs to the root user even if we access those files or directories from outside of the container. In order to solve this problem, you should build this image using `--build-arg` to add and use a non-root user. To build this image, run
 ```
-docker build -f Dockerfile.NGC.DGX [--build-arg USER=$(id -un)] [-t name:tag] PATH
+docker build -f Dockerfile.NGC.DGX [--build-arg USERNAME=your_username --build-arg PASSWORD=your_password] [-t name:tag] PATH
 ```
-The default setting for `USER`, `UID`, and `GID` is `docker`, `1000`, `1000`, respectively. If your account has different ones, you have to specify them by `--build-arg`.
+If you omit those `--build-arg` arguments, there only exists the root user.
+
 
 ## Dockerfile_base
 * ubuntu==20.04
@@ -33,11 +36,7 @@ To build the base image, run
 docker build -f Dockerfile_base [-t name:tag] PATH
 ```
 
-## Dockerfile
-This build is based on the base image built by `Dockerfile_base`. You can modify `Dockerfile` for your own project. If you only need to install additional packages, just modify `install.sh` which automatically install all the packages you specify. To build an image for your project, run
-```
-docker build [-t name:tag] PATH
-```
+
 ## How to use
 ### Running a Docker container
 If you want to use gpus before using Docker, you have to install `nvidia-container-toolkit`.
@@ -59,11 +58,11 @@ Here, `DIR` means the directory you want to mount on the container in order to a
 
 #### 1. rsync
    ```
-   rsync -avzhP SOURCE TARGET
+   rsync -avzhP SOURCE TARGET [--exclude PATTERN]
    ```
-   For example, if you want to transfer a directory `/home/user/foo` from `user@host` to `/workspace` of a container, run the command below, and vice versa.
+   If you want to exclude some files or directories, add `--exclude PATTERN` recursively as many as you want. For example, suppose you want to transfer a directory `/home/user/foo` from `user@host` to `/workspace` of a container and you want to exclude `bar` and `foobar.py` in this directory. In this case, run the command below, and vice versa. You can also use `--exclude={bar, foobar.py}` for multiple patterns.
    ```
-   rsync -avzhP user@host:/home/user/foo /workspace
+   rsync -avzhP user@host:/home/user/foo /workspace --exclude bar --exclude foobar.py
    ```
 #### 2. lftp
    When you want to connect to the server and transfer the files, first connect to the server:
@@ -71,15 +70,23 @@ Here, `DIR` means the directory you want to mount on the container in order to a
    lftp -u USER[,PASSWORD] SERVER_IP
    ```
    Note that you can use the Linux command (e.g., `cd`, `rm`, `ls`) when connected.
-   Then, run the below command to transfer the files.
+   Then, run the commands below to transfer directories. In order to exclude some files or directories, add `--exclude PATTERN` as in `rsync`.
    ```
    # remote --> local
-   mirror REMOTE_DIR LOCAL_DIR
+   mirror REMOTE_DIR LOCAL_DIR [--exclude PATTERN]
 
    # local --> remote
-   mirror -R LOCAL_DIR REMOTE_DIR
+   mirror -R LOCAL_DIR REMOTE_DIR [--exclude PATTERN]
    ```
-   `SOURCE` and `TARGET` can be both local and remote file directory. `-R` stands for recursive mode, which enables to transfer the whole directory tree.
+
+   If you want to transfer files, run the commands below:
+   ```
+   # remote --> local
+   get REMOTE_PATH LOCAL_PATH
+
+   # local --> remote
+   put LOCAL_PATH REMOTE_PATH
+   ```
 
    When I use `lftp` in a Docker container, I encountered an error:
    ```
