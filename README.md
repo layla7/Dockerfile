@@ -10,7 +10,7 @@
 * opencv-python==4.5.3
 * etc (zsh, neovim, wget, ...)
 
-The `ENTRYPOINT` is set as `["zsh"]` to make `zsh` as the default shell. In addition, some additional packages are installed for transferring files between NVIDIA DGX and external source or NAS.
+The `ENTRYPOINT` is set as `["zsh"]` to run `zsh` when there is no explicit command when you run a docker container. In addition, some additional packages are installed for transferring files between NVIDIA DGX and external source or NAS.
 * rsync==3.1.3
 * lftp==4.8.4
 
