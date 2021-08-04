@@ -8,9 +8,9 @@
 * pytorch==1.9.0
 * torchvision==0.10.0
 * opencv-python==4.5.3
-* etc
+* etc (zsh, neovim, wget, ...)
 
-In addition, some additional packages are installed for transferring files between NVIDIA DGX and external source or NAS.
+The `ENTRYPOINT` is set as `["zsh"]` to make `zsh` as the default shell. In addition, some additional packages are installed for transferring files between NVIDIA DGX and external source or NAS.
 * rsync==3.1.3
 * lftp==4.8.4
 
