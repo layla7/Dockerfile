@@ -6,15 +6,21 @@ ARG PASSWORD
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
 	sudo \
+	zsh \
+	wget \
+	neovim \
 	rsync \
 	lftp \
 	libgl1-mesa-glx \
 	libglib2.0
 
+ENTRYPOINT ["zsh"]
+
 RUN if [ $USERNAME != 'root' ]; then \
 		useradd -m ${USERNAME} -p $(openssl passwd -1 ${PASSWORD}); \
 	fi
 USER ${USERNAME}
+ENV HOME=/home/${USERNAME}
 
 RUN mkdir ~/.lftp
 RUN echo "set ssl:verify-certificate no" >> ~/.lftp/rc
@@ -22,3 +28,10 @@ RUN echo "set ssl:verify-certificate no" >> ~/.lftp/rc
 COPY install.sh /workspace
 
 RUN bash install.sh && rm install.sh
+RUN sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+COPY custom_zeta.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/custom_zeta.zsh-theme
+COPY zshrc ${HOME}/.zshrc
+COPY init.vim ${HOME}/.config/nvim/init.vim
+ENV TERM=xterm-256color
